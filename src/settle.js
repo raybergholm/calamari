@@ -1,4 +1,4 @@
-export const settle = async (promises) => {
+const settle = async (promises) => {
     if (!(promises instanceof Array)) {
         throw Error("calamari.settle expects an array as an input");
     }
@@ -23,4 +23,8 @@ export const settle = async (promises) => {
         success: [],
         error: []
     });
+};
+
+module.exports = {
+    settle
 };

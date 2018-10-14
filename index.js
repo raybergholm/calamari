@@ -1,9 +1,9 @@
-import settle from ".src/settle";
-import compose from ".src/compose";
+const { settle } = require("./src/settle");
+const { compose } = require("./src/compose");
 
 const calamari = {
     settle,
     compose
 };
 
-export default calamari;
+module.exports = calamari;

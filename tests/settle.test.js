@@ -14,7 +14,14 @@ describe("calamari.settle unit tests", () => {
     const instantResolve = () => Promise.resolve(200);
     const instantReject = () => Promise.reject(400);
 
-    it("", () => {
+    it("Empty input should throw an error", () => {
+        settle();
+    });
 
+    it("Non-array input should throw an error", () => {
+        expect(() => settle("hi")).to.throw("calamari.settle expects an array as an input");
+        expect(() => settle({
+            hello: "world"
+        }).to.throw("calamari.settle expects an array as an input"));
     });
 });

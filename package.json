@@ -12,7 +12,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "test": "mocha --compilers js:babel-core/register 'tests/*.test.js'"
+        "test": "mocha --compilers js:babel-core/register \"tests/*.test.js\""
     },
     "dependencies": {},
     "devDependencies": {

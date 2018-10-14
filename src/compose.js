@@ -1,4 +1,4 @@
-export const compose = (functions) => {
+const compose = async (functions) => {
     if (!(functions instanceof Array)) {
         throw Error("calamari.compose expects an array as an input");
     }
@@ -13,7 +13,7 @@ export const compose = (functions) => {
     }, Promise.resolve(initialArgs));
 };
 
-export const composeThen = (functions, ...initialArgs) => {
+const composeThen = (functions, ...initialArgs) => {
     if (!(functions instanceof Array)) {
         throw Error("calamari.compose expects an array as an input");
     }
@@ -23,4 +23,9 @@ export const composeThen = (functions, ...initialArgs) => {
     }
 
     return functions.reduce((previous, entry) => previous.then((result) => entry(result)), Promise.resolve(...initialArgs));
+};
+
+module.exports = {
+    compose,
+    composeThen
 };
