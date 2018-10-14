@@ -1,0 +1,27 @@
+{
+    "name": "calamari",
+    "version": "0.1.0",
+    "author": {
+        "name": "Raymond Bergholm",
+        "url": "http://www.github.com/raybergholm"
+    },
+    "description": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/raybergholm/calamari.git"
+    },
+    "license": "MIT",
+    "scripts": {
+        "test": "mocha --compilers js:babel-core/register 'tests/*.test.js'"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "chai": "^4.1.2",
+        "chai-as-promised": "^7.1.1",
+        "eslint": "^4.18.2",
+        "mocha": "^5.0.2"
+    }
+}
