@@ -5,7 +5,6 @@ const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const should = chai.should;
 
 const { settle } = require("../src/settle");
 
