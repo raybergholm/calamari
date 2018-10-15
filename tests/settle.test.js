@@ -10,10 +10,10 @@ const { settle } = require("../src/settle");
 
 describe("calamari.settle unit tests", () => {
     const return42 = () => 42;
-    const instantResolveEcho = (input) => Promise.resolve(input);
-    const normalFunctionEcho = (input) => input;
-    const instantReject = () => Promise.reject(500);
-    const instantRejectWithEcho = (input) => Promise.reject(input);
+    const returnWithEcho = (input) => input;
+    const resolveWithEcho = (input) => Promise.resolve(input);
+    const rejectWith500 = () => Promise.reject(500);
+    const rejectWithEcho = (input) => Promise.reject(input);
     const throwAnErrorWithEcho = (input) => {
         throw new Error(input);
     };
@@ -31,9 +31,9 @@ describe("calamari.settle unit tests", () => {
 
     it("Promise.resolve returns results to 'success'", () => {
         expect(settle([
-            instantResolveEcho(100),
-            instantResolveEcho(200),
-            instantResolveEcho({ message: "hi" }),
+            resolveWithEcho(100),
+            resolveWithEcho(200),
+            resolveWithEcho({ message: "hi" }),
         ])).to.eventually.eql({
             success: [100, 200, { message: "hi" }],
             error: []
@@ -44,7 +44,7 @@ describe("calamari.settle unit tests", () => {
         expect(settle([
             return42(),
             return42(),
-            normalFunctionEcho("hello world")
+            returnWithEcho("hello world")
         ])).to.eventually.eql({
             success: [42, 42, "hello world"],
             error: []
@@ -53,8 +53,8 @@ describe("calamari.settle unit tests", () => {
 
     it("Promise.reject get caught in 'error'", () => {
         expect(settle([
-            instantReject(),
-            instantRejectWithEcho({ message: "nope" })
+            rejectWith500(),
+            rejectWithEcho({ message: "nope" })
         ])).to.eventually.eql({
             success: [],
             error: [500, { message: "nope" }]
@@ -70,10 +70,10 @@ describe("calamari.settle unit tests", () => {
     it("Kitchen sink", () => {
         expect(settle([
             return42(),
-            instantResolveEcho("hello"),
-            normalFunctionEcho("world"),
-            instantRejectWithEcho({ message: "Internal Server Error" }),
-            instantReject()
+            resolveWithEcho("hello"),
+            returnWithEcho("world"),
+            rejectWithEcho({ message: "Internal Server Error" }),
+            rejectWith500()
         ])).to.eventually.eql({
             success: [42, "hello", "world"],
             error: [{ message: "Internal Server Error" }, 500]
