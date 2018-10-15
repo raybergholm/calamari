@@ -10,18 +10,93 @@ const should = chai.should;
 const { settle } = require("../src/settle");
 
 describe("calamari.settle unit tests", () => {
-    const return200 = () => 200;
-    const instantResolve = () => Promise.resolve(200);
-    const instantReject = () => Promise.reject(400);
+    const return42 = () => 42;
+    const instantResolveDoubler = (input) => Promise.resolve(input * 2);
+    const instantResolveEcho = (input) => Promise.resolve(input);
+    const normalFunctionEcho = (input) => input;
+    const delayedResolve200 = () => {
+
+    };
+    const instantReject = () => Promise.reject(500);
+    const instantRejectWithEcho = (input) => Promise.reject(input);
+    const throwAnError = () => { 
+        throw new Error("boom"); 
+    };
+    const throwAnErrorWithEcho = (input) => { 
+        throw new Error(input); 
+    };
+    const throwWrappedErrorWithEcho = (input) => Promise.resolve(throwAnErrorWithEcho(input));
 
     it("Empty input should throw an error", () => {
-        settle();
+        expect(settle()).to.eventually.be.rejectedWith("calamari.settle expects an array as an input");
     });
 
     it("Non-array input should throw an error", () => {
-        expect(() => settle("hi")).to.throw("calamari.settle expects an array as an input");
-        expect(() => settle({
+        expect(settle("hi")).to.eventually.be.rejectedWith("calamari.settle expects an array as an input");
+        expect(settle({
             hello: "world"
-        }).to.throw("calamari.settle expects an array as an input"));
+        })).to.eventually.be.rejectedWith("calamari.settle expects an array as an input");
+    });
+
+    it("Instant resolutions return expected results", () => {
+        expect(settle([
+            instantResolveEcho(100), 
+            instantResolveEcho(200),
+            instantResolveEcho({ message: "hi" }),
+        ])).to.eventually.eql({
+            success: [100, 200, { message: "hi" }],
+            error: []
+        });
+    });
+
+    it("Synchronous methods are fine", () => {
+        expect(settle([
+            return42(), 
+            return42(),
+            normalFunctionEcho("hello world")
+        ])).to.eventually.eql({
+            success: [42, 42, "hello world"],
+            error: []
+        });
+    });
+
+    it("Asynch rejects get caught", () => {
+        expect(settle([
+            instantReject(), 
+            instantRejectWithEcho({ message: "nope" })
+        ])).to.eventually.eql({
+            success: [],
+            error: [500, { message: "nope" }]
+        });
+    });
+
+    it("Synchronous errors get evaluated before settle() so they will throw", () => {
+        expect(settle([
+            throwAnErrorWithEcho("crash")
+        ])).to.throw(Error("crash"));
+    });
+
+    it("Wrapped errors get caught", () => {
+        expect(settle([
+            throwWrappedErrorWithEcho("this"), 
+            throwWrappedErrorWithEcho("blew"),
+            throwWrappedErrorWithEcho("up")
+        ])).to.eventually.eql({
+            success: [],
+            error: ["this", "blew", "up"]
+        });
+    });
+
+    it("Kitchen sink", () => {
+        expect(settle([
+            return42(),
+            instantResolveEcho("hello"),
+            normalFunctionEcho("world"),
+            instantRejectWithEcho({ message: "Internal Server Error"}),
+            instantReject()
+        ])).to.eventually.eql({
+            success: [42, "hello", "world"],
+            error: [{ message: "Internal Server Error"}, "boom"]
+        });
     });
 });
