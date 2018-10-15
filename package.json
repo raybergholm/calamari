@@ -5,7 +5,7 @@
         "name": "Raymond Bergholm",
         "url": "http://www.github.com/raybergholm"
     },
-    "description": "",
+    "description": "Asynchronous threading library",
     "repository": {
         "type": "git",
         "url": "https://github.com/raybergholm/calamari.git"
