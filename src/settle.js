@@ -3,14 +3,15 @@ const settle = async (promises) => {
         throw Error("calamari.settle expects an array as an input");
     }
 
-    const results = await Promise.all(promises.map((entry) => entry.then(
-        (success) => ({
-            success
-        }),
-        (error) => ({
-            error
-        })
-    )));
+    const results = await Promise.all(promises.map(async (entry) => {
+        const promise = entry.then ? entry : Promise.resolve(entry);
+
+        try {
+            return { success: await promise };
+        } catch (error) {
+            return { error };
+        }
+    }));
 
     return results.reduce((accumulator, entry) => {
         if (entry.error) {
@@ -20,9 +21,10 @@ const settle = async (promises) => {
         }
         return accumulator;
     }, {
-        success: [],
-        error: []
-    });
+            success: [],
+            error: []
+        }
+    );
 };
 
 module.exports = {
