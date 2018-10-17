@@ -27,6 +27,4 @@ const settle = async (promises) => {
     );
 };
 
-module.exports = {
-    settle
-};
+module.exports = settle;

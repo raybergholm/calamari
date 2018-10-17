@@ -1,4 +1,4 @@
-const compose = (functions) => (initialArgs) => {
+const chain = (functions) => (initialArgs) => {
     if (!(functions instanceof Array)) {
         throw Error("calamari.compose expects an array as an input");
     }
@@ -13,6 +13,4 @@ const compose = (functions) => (initialArgs) => {
     );
 };
 
-module.exports = {
-    compose
-};
+module.exports = chain;

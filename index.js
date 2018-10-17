@@ -1,5 +1,5 @@
-const { settle } = require("./src/settle");
-const { compose } = require("./src/compose");
+const settle = require("./src/settle");
+const compose = require("./src/compose");
 
 const calamari = {
     settle,
