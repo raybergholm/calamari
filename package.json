@@ -1,6 +1,6 @@
 {
   "name": "calamari",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "author": "raybergholm",
   "description": "",
   "repository": {
@@ -12,9 +12,6 @@
     "lint": "eslint",
     "prettier": "prettier",
     "test": "jest"
-  },
-  "dependencies": {
-    "axios": "^1.6.8"
   },
   "devDependencies": {
     "@types/http-errors": "^2.0.4",
