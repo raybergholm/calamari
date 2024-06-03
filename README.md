@@ -191,6 +191,45 @@ const {
 } = object;
 ```
 
+## [HttpClient](./lib/HttpClient.ts)
+
+A class which wraps around axios and extends the functionality slightly by remembering common vars like the host and common headers.
+
+```typescript
+import { HttpClient } from "calamari";
+
+const host = "www.example.com";
+const headers = { Authorization: "Bearer foobar"}; // will be included with every request
+const timeout = 10000;
+
+const client = new HttpClient(host, headers, timeout);
+
+const getResponse = await client.get<ApiResponseType>("api/12345");
+
+const postResponse = await client.post<ApiResponseType>("api/12345", "payload goes here");
+```
+
+The class also supports custom error handling:
+
+```typescript
+import { HttpClient } from "calamari";
+
+const host = "www.example.com";
+const headers = { Authorization: "Bearer foobar"}; // will be included with every request
+const timeout = 10000;
+const onError = (error) => {
+  // Handle your error, this will execute on any caught errors
+};
+
+const client = new HttpClient(host, headers, timeout, onError);
+
+const response = await client.get<ApiResponseType>("api/12345");
+
+const response = await client.get<ApiResponseType>("api/12345", {onError: (error) => {
+  // This will override any previously defined error handlers for this specific call
+} });
+```
+
 ## [once](./lib/once.ts)
 
 Given a task function that returns a promise, this function will cache the original promise on first call, and future invocations will receive the same cached promise. This means that the task function will be invoked once, and subsequent calls will instantly resolve with the same promise.
