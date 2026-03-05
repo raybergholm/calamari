@@ -3,7 +3,7 @@ export const arrayIntersection = (left: any[], right: any[]): any[] =>
 
 export const arrayDiff = (
   left: any[],
-  right: any[]
+  right: any[],
 ): [any[], any[], intersection: any[]] => {
   const intersection = arrayIntersection(left, right);
   const onlyInLeft = left.filter((value) => !intersection.includes(value));
@@ -33,7 +33,7 @@ export type ObjectDiffArg = Record<string | number | symbol, any>;
 
 export const objectIntersection = (
   left: ObjectDiffArg,
-  right: ObjectDiffArg
+  right: ObjectDiffArg,
 ): ObjectDiffArg =>
   Object.entries(left).reduce(
     (acc, [key, value]) => {
@@ -42,24 +42,31 @@ export const objectIntersection = (
       }
       return acc;
     },
-    {} as Record<any, any>
+    {} as Record<any, any>,
   );
 
-export const objectDiff = (left: Record<any, any>, right: Record<any, any>) => {
-  const intersectionKeys = Object.keys(objectIntersection(left, right));
-  return [
-    Object.keys(left)
-      .filter((key) => !intersectionKeys.includes(key))
-      .reduce((acc, key) => ({ ...acc, [key]: left[key] }), {}),
-    Object.keys(right)
-      .filter((key) => !intersectionKeys.includes(key))
-      .reduce((acc, key) => ({ ...acc, [key]: right[key] }), {}),
-  ];
+// Compare two objects, returns all props which are not in the other object, or where the value is different.
+// Works only with primitives (string, number, boolean) which can be compared with !==, don't use this for nested objects or arrays
+export const objectDiff = <
+  T extends Record<string, string | number | boolean | null | undefined>,
+>(
+  left: T,
+  right: T,
+): [T, T] => {
+  const onlyInLeft = Object.entries(left)
+    .filter(([key, value]) => !(key in right) || right[key] !== value)
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as T);
+
+  const onlyInRight = Object.entries(right)
+    .filter(([key, value]) => !(key in left) || left[key] !== value)
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as T);
+
+  return [onlyInLeft, onlyInRight];
 };
 
 export const objectDiffLeft = (
   left: Record<any, any>,
-  right: Record<any, any>
+  right: Record<any, any>,
 ) => {
   const [onlyInLeft] = objectDiff(left, right);
   return onlyInLeft;
@@ -67,7 +74,7 @@ export const objectDiffLeft = (
 
 export const objectDiffRight = (
   left: Record<any, any>,
-  right: Record<any, any>
+  right: Record<any, any>,
 ) => {
   const [, onlyInRight] = objectDiff(left, right);
   return onlyInRight;

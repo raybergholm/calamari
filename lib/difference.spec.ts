@@ -22,7 +22,7 @@ describe("array", () => {
   it("arrayDiff should return unique elements", () => {
     const left = [1, 2, "3", 4, 5];
     const right = [2, 3, 4];
-    
+
     const [onlyInLeft, onlyInRight] = arrayDiff(left, right);
 
     expect(onlyInLeft).toEqual([1, "3", 5]);
@@ -32,7 +32,7 @@ describe("array", () => {
   it("arrayDiffLeft and arrayDiffRight should return corresponding unique elements", () => {
     const left = ["only left", "abc", "1", 1];
     const right = ["only right", "1", 1, "abc"];
-    
+
     const onlyInLeft = arrayDiffLeft(left, right);
     const onlyInRight = arrayDiffRight(left, right);
 
@@ -49,40 +49,93 @@ describe("array", () => {
 });
 
 describe("object", () => {
-  const left = {
-    same: "same key, same value",
-    left: "unique key",
-    diff: "same key, different value"
+  type ObjectDiff = Record<string, string | number | boolean | null | undefined>;
+  const left: ObjectDiff = {
+    sameString: "same key, same value",
+    sameNumber: 3,
+    sameNull: null,
+    sameUndefined: undefined,
+    leftString: "unique key in left",
+    leftNumber: 99,
+    diffString: "same key, different value",
+    diffNumber: 100,
+    diffBoolean: true,
+    diffNull: null,
+    diffUndefined: null,
   };
-  const right = {
-    same: "same key, same value",
-    right: "unique key",
-    diff: "same key but different value"
+  const right: ObjectDiff = {
+    sameString: "same key, same value",
+    sameNumber: 3,
+    sameNull: null,
+    sameUndefined: undefined,
+    rightString: "unique key in right",
+    rightBoolean: false,
+    rightNull: null,
+    rightUndefined: undefined,
+    diffString: "same key but different value",
+    diffNumber: 200,
+    diffBoolean: false,
+    diffNull: "",
+    diffUndefined: undefined,
   };
+
   it("intersection should return common attributes", () => {
     expect(objectIntersection(left, right)).toEqual({
-      same: "same key, same value",
+      sameString: "same key, same value",
+      sameNumber: 3,
+      sameNull: null,
+      sameUndefined: undefined,
     });
   });
 
   it("objectDiff should return unique attributes", () => {
-    expect(objectDiff(left, right)).toEqual([{
-      left: "unique key",
-      diff: "same key, different value"
-    }, {
-      right: "unique key",
-      diff: "same key but different value"
-    }]);
+    const [onlyInLeft, onlyInRight] = objectDiff<ObjectDiff>(left, right);
+
+    expect(onlyInLeft).toEqual({
+      leftString: "unique key in left",
+      leftNumber: 99,
+      diffString: "same key, different value",
+      diffNumber: 100,
+      diffBoolean: true,
+      diffNull: null,
+      diffUndefined: null,
+    });
+    expect(onlyInRight).toEqual({
+      rightString: "unique key in right",
+      rightBoolean: false,
+      rightNull: null,
+      rightUndefined: undefined,
+      diffString: "same key but different value",
+      diffNumber: 200,
+      diffBoolean: false,
+      diffNull: "",
+      diffUndefined: undefined,
+    });
   });
 
   it("objectDiffLeft and objectDiffRight should return corresponding unique attributes", () => {
-    expect(objectDiffLeft(left, right)).toEqual({
-      left: "unique key",
-      diff: "same key, different value"
+    const onlyInLeft = objectDiffLeft(left, right);
+    expect(onlyInLeft).toEqual({
+      leftString: "unique key in left",
+      leftNumber: 99,
+      diffString: "same key, different value",
+      diffNumber: 100,
+      diffBoolean: true,
+      diffNull: null,
+      diffUndefined: null,
     });
-    expect(objectDiffRight(left, right)).toEqual({
-      right: "unique key",
-      diff: "same key but different value"
+
+    const onlyInRight = objectDiffRight(left, right);
+    expect(onlyInRight).toEqual({
+      rightString: "unique key in right",
+      rightBoolean: false,
+      rightNull: null,
+      rightUndefined: undefined,
+      diffString: "same key but different value",
+      diffNumber: 200,
+      diffBoolean: false,
+      diffNull: "",
+      diffUndefined: undefined,
     });
   });
 
