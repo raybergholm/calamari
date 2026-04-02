@@ -1,6 +1,6 @@
 import { retry, BackoffConfig, DEFAULT_BACKOFF_CONFIG } from "./retry";
 
-describe.skip("retry", () => {
+describe("retry", () => {
   const mockTask = jest.fn();
   beforeEach(() => {
     jest.resetAllMocks();
@@ -23,9 +23,11 @@ describe.skip("retry", () => {
     await expect(retryable(1, 2, 3)).resolves.toEqual(6);
   });
 
-  it.skip("should keep trying until task succeeds", async () => {
-    mockTask.mockRejectedValueOnce(new Error("NO"));
-    mockTask.mockResolvedValueOnce("YES");
+  it("should keep trying until task succeeds", async () => {
+    mockTask
+      .mockRejectedValueOnce(new Error("NO"))
+      .mockRejectedValueOnce(new Error("STILL NO"))
+      .mockResolvedValueOnce("YES");
 
     const retryable = retry(mockTask);
 
