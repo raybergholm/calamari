@@ -22,7 +22,7 @@ describe("array", () => {
   it("arrayDiff should return unique elements", () => {
     const left = [1, 2, "3", 4, 5];
     const right = [2, 3, 4];
-    
+
     const [onlyInLeft, onlyInRight] = arrayDiff(left, right);
 
     expect(onlyInLeft).toEqual([1, "3", 5]);
@@ -32,7 +32,7 @@ describe("array", () => {
   it("arrayDiffLeft and arrayDiffRight should return corresponding unique elements", () => {
     const left = ["only left", "abc", "1", 1];
     const right = ["only right", "1", 1, "abc"];
-    
+
     const onlyInLeft = arrayDiffLeft(left, right);
     const onlyInRight = arrayDiffRight(left, right);
 
@@ -52,12 +52,12 @@ describe("object", () => {
   const left = {
     same: "same key, same value",
     left: "unique key",
-    diff: "same key, different value"
+    diff: "same key, different value",
   };
   const right = {
     same: "same key, same value",
     right: "unique key",
-    diff: "same key but different value"
+    diff: "same key but different value",
   };
   it("intersection should return common attributes", () => {
     expect(objectIntersection(left, right)).toEqual({
@@ -66,23 +66,26 @@ describe("object", () => {
   });
 
   it("objectDiff should return unique attributes", () => {
-    expect(objectDiff(left, right)).toEqual([{
-      left: "unique key",
-      diff: "same key, different value"
-    }, {
-      right: "unique key",
-      diff: "same key but different value"
-    }]);
+    expect(objectDiff(left, right)).toEqual([
+      {
+        left: "unique key",
+        diff: "same key, different value",
+      },
+      {
+        right: "unique key",
+        diff: "same key but different value",
+      },
+    ]);
   });
 
   it("objectDiffLeft and objectDiffRight should return corresponding unique attributes", () => {
     expect(objectDiffLeft(left, right)).toEqual({
       left: "unique key",
-      diff: "same key, different value"
+      diff: "same key, different value",
     });
     expect(objectDiffRight(left, right)).toEqual({
       right: "unique key",
-      diff: "same key but different value"
+      diff: "same key but different value",
     });
   });
 

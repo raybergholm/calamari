@@ -1,9 +1,10 @@
 {
-  "includes": ["jest.config.ts", "lib/**/*.ts", "lib/**/*.d.ts"],
+  "includes": ["vitest.config.mts", "lib/**/*.ts", "lib/**/*.d.ts"],
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2025",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "types": ["vitest/globals"],
     "declaration": true,
     "sourceMap": true,
     "strict": true,

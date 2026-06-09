@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  Method,
+  type AxiosError,
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type Method,
 } from "axios";
 
 export type HttpClientBody = Record<string, any> | string;
 
-type HttpClientDefaultErrorHandler = (error: AxiosError<unknown, any>) => AxiosError<unknown, any>;
+type HttpClientDefaultErrorHandler = (
+  error: AxiosError<unknown, any>,
+) => AxiosError<unknown, any>;
 export type HttpClientErrorHandler = HttpClientDefaultErrorHandler | any;
 export interface HttpClientRequestConfig extends AxiosRequestConfig {
   onError?: HttpClientErrorHandler;
@@ -17,9 +21,21 @@ export interface HttpClientInterface {
   options<T>(path: string, config?: HttpClientRequestConfig): Promise<T>;
   head<T>(path: string, config?: HttpClientRequestConfig): Promise<T>;
   get<T>(path: string, config?: HttpClientRequestConfig): Promise<T>;
-  post<T>(path: string, body: HttpClientBody, config?: HttpClientRequestConfig): Promise<T>;
-  put<T>(path: string, body: HttpClientBody, config?: HttpClientRequestConfig): Promise<T>;
-  patch<T>(path: string, body: HttpClientBody, config?: HttpClientRequestConfig): Promise<T>;
+  post<T>(
+    path: string,
+    body: HttpClientBody,
+    config?: HttpClientRequestConfig,
+  ): Promise<T>;
+  put<T>(
+    path: string,
+    body: HttpClientBody,
+    config?: HttpClientRequestConfig,
+  ): Promise<T>;
+  patch<T>(
+    path: string,
+    body: HttpClientBody,
+    config?: HttpClientRequestConfig,
+  ): Promise<T>;
   delete<T>(path: string, config?: HttpClientRequestConfig): Promise<T>;
 }
 
@@ -48,38 +64,38 @@ export class HttpClient implements HttpClientInterface {
     body?: HttpClientBody,
     config: HttpClientRequestConfig = {},
   ): Promise<T> {
-    const response = await this.client.request(
-      {
+    const response = await this.client
+      .request({
         method,
         url: path,
         data: body,
         ...config,
-      }
-    ).catch(config?.onError ?? this.onError);
+      })
+      .catch(config?.onError ?? this.onError);
     return response.data;
   }
 
-  protected defaultErrorHandler ( error: AxiosError ): AxiosError {
+  protected defaultErrorHandler(error: AxiosError): AxiosError {
     throw error;
   }
 
   public async options<T>(
     path: string,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("OPTIONS", path, undefined, config);
   }
 
   public async head<T>(
     path: string,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("HEAD", path, undefined, config);
   }
 
   public async get<T>(
     path: string,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("GET", path, undefined, config);
   }
@@ -87,7 +103,7 @@ export class HttpClient implements HttpClientInterface {
   public async post<T>(
     path: string,
     body: HttpClientBody,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("POST", path, body, config);
   }
@@ -95,7 +111,7 @@ export class HttpClient implements HttpClientInterface {
   public async put<T>(
     path: string,
     body: HttpClientBody,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("PUT", path, body, config);
   }
@@ -103,14 +119,14 @@ export class HttpClient implements HttpClientInterface {
   public async patch<T>(
     path: string,
     body: HttpClientBody,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("PATCH", path, body, config);
   }
 
   public async delete<T>(
     path: string,
-    config?: HttpClientRequestConfig
+    config?: HttpClientRequestConfig,
   ): Promise<T> {
     return this._request("DELETE", path, undefined, config);
   }

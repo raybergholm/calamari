@@ -1,10 +1,11 @@
 // eslint.config.js
-import { defineConfig } from "eslint/config"
+import { defineConfig } from "eslint/config";
 
-import eslint from "@eslint/js"
-import eslintConfigPrettier from "eslint-config-prettier/flat"
-import simpleImportSort from "eslint-plugin-simple-import-sort"
-import tseslint from 'typescript-eslint';
+import jseslint from "@eslint/js";
+import importPlugin from "eslint-plugin-import";
+import sortExports from "eslint-plugin-sort-exports";
+import unusedImports from "eslint-plugin-unused-imports";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
   {
@@ -12,20 +13,20 @@ export default defineConfig([
     // DO NOT ADD OTHER KEYS HERE: ESLint's flat config will only treat this as a global ignore if there are no other keys here
     ignores: [],
   },
-  eslint.configs.recommended,
-  tseslint.config.recommended,
-  eslintConfigPrettier,
+  jseslint.configs.recommended,
+  tseslint.configs.recommended,
   {
     files: ["**/*.ts", "**/*.test.ts", "**/*.spec.ts"],
     plugins: {
-      "simple-import-sort": simpleImportSort,
+      import: importPlugin,
+      "sort-exports": sortExports,
+      "unused-imports": unusedImports,
     },
     rules: {
+      ...importPlugin.configs.typescript.rules,
       semi: "error",
       "prefer-const": "error",
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
       "@typescript-eslint/consistent-type-imports": "error",
     },
   },
-])
+]);

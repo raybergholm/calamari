@@ -1,9 +1,9 @@
-import { retry, BackoffConfig, DEFAULT_BACKOFF_CONFIG } from "./retry";
+import { retry, type BackoffConfig, DEFAULT_BACKOFF_CONFIG } from "./retry";
 
 describe("retry", () => {
-  const mockTask = jest.fn();
+  const mockTask = vi.fn();
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should not trigger extra calls on success", async () => {
@@ -17,7 +17,7 @@ describe("retry", () => {
 
   it("should support args for the task function", async () => {
     mockTask.mockImplementation((first, second, third) =>
-      Promise.resolve(first + second + third)
+      Promise.resolve(first + second + third),
     );
     const retryable = retry(mockTask);
     await expect(retryable(1, 2, 3)).resolves.toEqual(6);
@@ -80,7 +80,7 @@ describe("retry", () => {
     };
 
     expect(() => retry(mockTask, customConfig)).toThrow(
-      "fewer waitIntervalsInMs values than attempts, check your config"
+      "fewer waitIntervalsInMs values than attempts, check your config",
     );
     expect(mockTask).toHaveBeenCalledTimes(0);
   });

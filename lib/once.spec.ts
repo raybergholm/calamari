@@ -1,9 +1,9 @@
 import { once } from "./once";
 
 describe("once", () => {
-  const mockTask = jest.fn();
+  const mockTask = vi.fn();
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should return an async function that resolves with the same value as the input task's return value", async () => {
@@ -13,7 +13,9 @@ describe("once", () => {
   });
 
   it("should support args for the task function", async () => {
-    mockTask.mockImplementation((first, second, third) => Promise.resolve(first + second + third));
+    mockTask.mockImplementation((first, second, third) =>
+      Promise.resolve(first + second + third),
+    );
     const cached = once(mockTask);
     await expect(cached(1, 2, 3)).resolves.toEqual(6);
   });
@@ -25,7 +27,7 @@ describe("once", () => {
           setTimeout(() => {
             res("OUTPUT");
           }, 100);
-        })
+        }),
     );
 
     const cached = once(mockTask);

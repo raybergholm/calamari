@@ -10,8 +10,9 @@ export const DEFAULT_BACKOFF_CONFIG: BackoffConfig = {
 };
 
 export const retry = <T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   task: (...args: any[]) => Promise<T>,
-  config: BackoffConfig = DEFAULT_BACKOFF_CONFIG
+  config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
 ) => {
   const sleep = (ms: number = 0) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -21,10 +22,11 @@ export const retry = <T>(
     config.waitIntervalsInMs.length < config.attempts
   ) {
     throw new Error(
-      "fewer waitIntervalsInMs values than attempts, check your config"
+      "fewer waitIntervalsInMs values than attempts, check your config",
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (...args: any[]): Promise<T> => {
     let attempt = 0;
     const waitIntervals = Array.isArray(config.waitIntervalsInMs)

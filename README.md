@@ -82,12 +82,7 @@ These functions are also exported as a group if treeshaking isn't necessary:
 ```typescript
 import { array } from "calamari";
 
-const {
-  intersection,
-  diff,
-  diffLeft,
-  diffRight
-} = array;
+const { intersection, diff, diffLeft, diffRight } = array;
 ```
 
 ### Objects
@@ -102,12 +97,12 @@ import { objectIntersection } from "calamari";
 const left = {
   common: "toBoth",
   diff: "onlyLeft",
-  something: "else"
+  something: "else",
 };
 const right = {
   common: "toBoth",
   diff: "onlyRight",
-  something: "else entirely"
+  something: "else entirely",
 };
 
 const result = objectIntersection(left, right);
@@ -122,12 +117,12 @@ import { objectDiff } from "calamari";
 const left = {
   common: "toBoth",
   diff: "onlyLeft",
-  something: "else"
+  something: "else",
 };
 const right = {
   common: "toBoth",
   diff: "onlyRight",
-  something: "else entirely"
+  something: "else entirely",
 };
 
 const result = objectIntersection(left, right);
@@ -144,12 +139,12 @@ import { objectDiffLeft } from "calamari";
 const left = {
   common: "toBoth",
   diff: "onlyLeft",
-  something: "else"
+  something: "else",
 };
 const right = {
   common: "toBoth",
   diff: "onlyRight",
-  something: "else entirely"
+  something: "else entirely",
 };
 
 const result = objectDiffLeft(left, right);
@@ -166,12 +161,12 @@ import { objectDiffRight } from "calamari";
 const left = {
   common: "toBoth",
   diff: "onlyLeft",
-  something: "else"
+  something: "else",
 };
 const right = {
   common: "toBoth",
   diff: "onlyRight",
-  something: "else entirely"
+  something: "else entirely",
 };
 
 const result = objectDiffRight(left, right);
@@ -183,12 +178,7 @@ These functions are also exported as a group if treeshaking isn't necessary:
 ```typescript
 import { object } from "calamari";
 
-const {
-  intersection,
-  diff,
-  diffLeft,
-  diffRight
-} = object;
+const { intersection, diff, diffLeft, diffRight } = object;
 ```
 
 ## [HttpClient](./lib/HttpClient.ts)
@@ -199,14 +189,17 @@ A class which wraps around axios and extends the functionality slightly by remem
 import { HttpClient } from "calamari";
 
 const host = "www.example.com";
-const headers = { Authorization: "Bearer foobar"}; // will be included with every request
+const headers = { Authorization: "Bearer foobar" }; // will be included with every request
 const timeout = 10000;
 
 const client = new HttpClient(host, headers, timeout);
 
 const getResponse = await client.get<ApiResponseType>("api/12345");
 
-const postResponse = await client.post<ApiResponseType>("api/12345", "payload goes here");
+const postResponse = await client.post<ApiResponseType>(
+  "api/12345",
+  "payload goes here",
+);
 ```
 
 The class also supports custom error handling:
@@ -215,7 +208,7 @@ The class also supports custom error handling:
 import { HttpClient } from "calamari";
 
 const host = "www.example.com";
-const headers = { Authorization: "Bearer foobar"}; // will be included with every request
+const headers = { Authorization: "Bearer foobar" }; // will be included with every request
 const timeout = 10000;
 const onError = (error) => {
   // Handle your error, this will execute on any caught errors
@@ -225,9 +218,11 @@ const client = new HttpClient(host, headers, timeout, onError);
 
 const response = await client.get<ApiResponseType>("api/12345");
 
-const response = await client.get<ApiResponseType>("api/12345", {onError: (error) => {
-  // This will override any previously defined error handlers for this specific call
-} });
+const response = await client.get<ApiResponseType>("api/12345", {
+  onError: (error) => {
+    // This will override any previously defined error handlers for this specific call
+  },
+});
 ```
 
 ## [once](./lib/once.ts)

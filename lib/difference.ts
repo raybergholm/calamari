@@ -1,10 +1,10 @@
-export const arrayIntersection = (left: any[], right: any[]): any[] =>
+export const arrayIntersection = <T>(left: T[], right: T[]): T[] =>
   left.filter((value) => right.includes(value));
 
-export const arrayDiff = (
-  left: any[],
-  right: any[]
-): [any[], any[], intersection: any[]] => {
+export const arrayDiff = <T>(
+  left: T[],
+  right: T[],
+): [T[], T[], intersection: T[]] => {
   const intersection = arrayIntersection(left, right);
   const onlyInLeft = left.filter((value) => !intersection.includes(value));
   const onlyInRight = right.filter((value) => !intersection.includes(value));
@@ -12,12 +12,12 @@ export const arrayDiff = (
   return [onlyInLeft, onlyInRight, intersection];
 };
 
-export const arrayDiffLeft = (left: any[], right: any[]): any[] => {
+export const arrayDiffLeft = <T>(left: T[], right: T[]): T[] => {
   const [onlyInLeft] = arrayDiff(left, right);
   return onlyInLeft;
 };
 
-export const arrayDiffRight = (left: any[], right: any[]): any[] => {
+export const arrayDiffRight = <T>(left: T[], right: T[]): T[] => {
   const [, onlyInRight] = arrayDiff(left, right);
   return onlyInRight;
 };
@@ -29,23 +29,23 @@ export const array = {
   diffRight: arrayDiffRight,
 };
 
-export type ObjectDiffArg = Record<string | number | symbol, any>;
+export type ObjectDiffArg<T> = Record<string | number | symbol, T>;
 
-export const objectIntersection = (
-  left: ObjectDiffArg,
-  right: ObjectDiffArg
-): ObjectDiffArg =>
-  Object.entries(left).reduce(
-    (acc, [key, value]) => {
-      if (key in right && right[key] === value) {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Record<any, any>
-  );
+export const objectIntersection = <T>(
+  left: ObjectDiffArg<T>,
+  right: ObjectDiffArg<T>,
+): ObjectDiffArg<T> =>
+  Object.entries(left).reduce((acc, [key, value]) => {
+    if (key in right && right[key] === value) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as ObjectDiffArg<T>);
 
-export const objectDiff = (left: Record<any, any>, right: Record<any, any>) => {
+export const objectDiff = <T>(
+  left: ObjectDiffArg<T>,
+  right: ObjectDiffArg<T>,
+) => {
   const intersectionKeys = Object.keys(objectIntersection(left, right));
   return [
     Object.keys(left)
@@ -57,17 +57,17 @@ export const objectDiff = (left: Record<any, any>, right: Record<any, any>) => {
   ];
 };
 
-export const objectDiffLeft = (
-  left: Record<any, any>,
-  right: Record<any, any>
+export const objectDiffLeft = <T>(
+  left: ObjectDiffArg<T>,
+  right: ObjectDiffArg<T>,
 ) => {
   const [onlyInLeft] = objectDiff(left, right);
   return onlyInLeft;
 };
 
-export const objectDiffRight = (
-  left: Record<any, any>,
-  right: Record<any, any>
+export const objectDiffRight = <T>(
+  left: ObjectDiffArg<T>,
+  right: ObjectDiffArg<T>,
 ) => {
   const [, onlyInRight] = objectDiff(left, right);
   return onlyInRight;

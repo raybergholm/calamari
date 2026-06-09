@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* 
   Given a task function that returns a promise, this function will cache the original promise on first call
   and future invocations will receive the same cached promise.
@@ -6,7 +8,6 @@
 
   The cached promise is discarded when it rejects, so failed tasks can be retried.
 */
-
 export const once = <T>(task: (...args: any[]) => Promise<T>) => {
   let cachedResponse: Promise<T> | undefined;
 
@@ -15,11 +16,11 @@ export const once = <T>(task: (...args: any[]) => Promise<T>) => {
       cachedResponse = task(...args).catch((err) => {
         cachedResponse = undefined;
         throw err;
-      })
+      });
     }
 
     return cachedResponse;
-  }
+  };
 };
 
 export default once;
