@@ -9,6 +9,12 @@ export const DEFAULT_BACKOFF_CONFIG: BackoffConfig = {
   waitIntervalsInMs: 0,
 };
 
+/**
+ * Given a task function that returns a promise, this function adds retry logic and attempts to retry failures based on the given config.
+ * @param task - The task function that returns a promise.
+ * @param config - The backoff configuration specifying the number of attempts and wait intervals.
+ * @returns A curried function wrapping around the task function. Call this function to execute the task.
+ */
 export const retry = <T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   task: (...args: any[]) => Promise<T>,
