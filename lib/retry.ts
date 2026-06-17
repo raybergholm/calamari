@@ -47,7 +47,9 @@ export const retry = <T>(
           throw err;
         }
         attempt++;
-        await sleep(waitIntervals[attempt]);
+        if (waitIntervals[attempt]) {
+          await sleep(waitIntervals[attempt]);
+        }
       }
     }
     throw Error("no");
