@@ -1,10 +1,9 @@
-export type WaitIntervalsInMs = number | [number, ...number[]];
-export type BackoffConfig = {
+export type RetryConfig = {
   attempts: number;
-  waitIntervalsInMs: WaitIntervalsInMs;
+  waitIntervalsInMs: number | number[];
 };
 
-export const DEFAULT_BACKOFF_CONFIG: BackoffConfig = {
+export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   attempts: 3,
   waitIntervalsInMs: 0,
 };
@@ -18,26 +17,34 @@ export const DEFAULT_BACKOFF_CONFIG: BackoffConfig = {
 export const retry = <T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   task: (...args: any[]) => Promise<T>,
-  config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+  config: RetryConfig = DEFAULT_RETRY_CONFIG,
 ) => {
   const sleep = (ms: number = 0) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-  if (
-    Array.isArray(config.waitIntervalsInMs) &&
-    config.waitIntervalsInMs.length < config.attempts
-  ) {
-    throw new Error(
-      "fewer waitIntervalsInMs values than attempts, check your config",
+  const formatWaitIntervals = (config: RetryConfig): number[] => {
+    if (!Array.isArray(config.waitIntervalsInMs)) {
+      // waitIntervalsInMs is a single number
+      return Array(config.attempts).fill(config.waitIntervalsInMs);
+    }
+
+    if (config.waitIntervalsInMs.length >= config.attempts) {
+      // waitIntervalsInMs is an array and of sufficient length
+      return config.waitIntervalsInMs;
+    }
+
+    // waitIntervalsInMs is an array but shorter than attempts, fill the rest with the last value
+    return config.waitIntervalsInMs.concat(
+      Array(config.attempts - config.waitIntervalsInMs.length).fill(
+        config.waitIntervalsInMs[config.waitIntervalsInMs.length - 1],
+      ),
     );
-  }
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (...args: any[]): Promise<T> => {
     let attempt = 0;
-    const waitIntervals = Array.isArray(config.waitIntervalsInMs)
-      ? config.waitIntervalsInMs
-      : Array(config.attempts).fill(config.waitIntervalsInMs);
+    const waitIntervals = formatWaitIntervals(config);
 
     while (attempt < config.attempts) {
       try {

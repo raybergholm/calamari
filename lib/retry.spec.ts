@@ -1,4 +1,4 @@
-import { retry, type BackoffConfig, DEFAULT_BACKOFF_CONFIG } from "./retry";
+import { retry, type RetryConfig, DEFAULT_RETRY_CONFIG } from "./retry";
 
 describe("retry", () => {
   const mockTask = vi.fn();
@@ -40,48 +40,50 @@ describe("retry", () => {
     const retryable = retry(mockTask);
 
     await expect(async () => await retryable()).rejects.toThrow();
-    expect(mockTask).toHaveBeenCalledTimes(DEFAULT_BACKOFF_CONFIG.attempts);
+    expect(mockTask).toHaveBeenCalledTimes(DEFAULT_RETRY_CONFIG.attempts);
   });
 
-  it("should support custom backoffConfig", async () => {
-    mockTask.mockRejectedValue(new Error("WILL ALWAYS REJECT"));
+  describe("should support custom retryConfig", () => {
+    it("waitIntervalsInMs as number", async () => {
+      mockTask.mockRejectedValue(new Error("WILL ALWAYS REJECT"));
 
-    const customConfig: BackoffConfig = {
-      attempts: 5,
-      waitIntervalsInMs: 0,
-    };
+      const customConfig: RetryConfig = {
+        attempts: 5,
+        waitIntervalsInMs: 0,
+      };
 
-    const retryable = retry(mockTask, customConfig);
+      const retryable = retry(mockTask, customConfig);
 
-    await expect(retryable()).rejects.toThrow();
-    expect(mockTask).toHaveBeenCalledTimes(customConfig.attempts);
-  });
+      await expect(retryable()).rejects.toThrow();
+      expect(mockTask).toHaveBeenCalledTimes(customConfig.attempts);
+    });
 
-  it("should support custom backoffConfig using an array of intervals", async () => {
-    mockTask.mockRejectedValue(new Error("WILL ALWAYS REJECT"));
+    it("waitIntervalsInMs as a number array", async () => {
+      mockTask.mockRejectedValue(new Error("WILL ALWAYS REJECT"));
 
-    const customConfig: BackoffConfig = {
-      attempts: 5,
-      waitIntervalsInMs: [1, 2, 3, 4, 5],
-    };
+      const customConfig: RetryConfig = {
+        attempts: 5,
+        waitIntervalsInMs: [1, 2, 3, 4, 5],
+      };
 
-    const retryable = retry(mockTask, customConfig);
+      const retryable = retry(mockTask, customConfig);
 
-    await expect(async () => await retryable()).rejects.toThrow();
-    expect(mockTask).toHaveBeenCalledTimes(customConfig.attempts);
-  });
+      await expect(async () => await retryable()).rejects.toThrow();
+      expect(mockTask).toHaveBeenCalledTimes(customConfig.attempts);
+    });
 
-  it("should throw if custom backoffConfig is malformed", async () => {
-    mockTask.mockResolvedValue("OUTPUT");
+    it("waitIntervalsInMs as a short number array should be filled up to the attempts count", async () => {
+      mockTask.mockRejectedValue(new Error("WILL ALWAYS REJECT"));
 
-    const customConfig: BackoffConfig = {
-      attempts: 3,
-      waitIntervalsInMs: [0],
-    };
+      const customConfig: RetryConfig = {
+        attempts: 10,
+        waitIntervalsInMs: [0, 1],
+      };
 
-    expect(() => retry(mockTask, customConfig)).toThrow(
-      "fewer waitIntervalsInMs values than attempts, check your config",
-    );
-    expect(mockTask).toHaveBeenCalledTimes(0);
+      const retryable = retry(mockTask, customConfig);
+
+      await expect(async () => await retryable()).rejects.toThrow();
+      expect(mockTask).toHaveBeenCalledTimes(customConfig.attempts);
+    });
   });
 });
