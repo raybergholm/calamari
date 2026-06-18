@@ -10,6 +10,7 @@ export default defineConfig({
     alias: { "@": resolve(__dirname, ".") },
   },
   test: {
+    setupFiles: ["./vitest.setup.ts"],
     include: ["**/?(*.)+(spec|test).?(ts|tsx)"],
     exclude: ["node_modules", "dist"],
     clearMocks: true,
